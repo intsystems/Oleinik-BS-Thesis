@@ -1,192 +1,284 @@
-\documentclass[10pt,pdf,hyperref={unicode}]{beamer}
-
-\mode<presentation>
-{
-\usetheme{boxes}
+\documentclass{beamer}
 \beamertemplatenavigationsymbolsempty
-
+\usecolortheme{beaver}
+\setbeamertemplate{blocks}[rounded=true, shadow=true]
 \setbeamertemplate{footline}[page number]
-\setbeamersize{text margin left=0.5em, text margin right=0.5em}
-}
-
+%
 \usepackage[utf8]{inputenc}
-\usepackage[english, russian]{babel}
-\usepackage{bm}
-\usepackage{multirow}
-\usepackage{ragged2e}
-\usepackage{indentfirst}
-\usepackage{multicol}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
 \usepackage{subfig}
-\usepackage{amsmath,amssymb}
-\usepackage{enumerate}
-\usepackage{mathtools}
-\usepackage{comment}
-\usepackage{multicol}
-
-\usepackage[all]{xy}
-
-\usepackage{tikz}
-\usetikzlibrary{positioning,arrows}
-
-\tikzstyle{name} = [parameters]
-\definecolor{name}{rgb}{0.5,0.5,0.5}
-
-\usepackage{caption}
-\captionsetup{skip=0pt,belowskip=0pt}
-
-\newtheorem{rustheorem}{Теорема}
-\newtheorem{russtatement}{Утверждение}
-\newtheorem{rusdefinition}{Определение}
-
-% colors
-\definecolor{darkgreen}{rgb}{0.0, 0.2, 0.13}
-\definecolor{darkcyan}{rgb}{0.0, 0.55, 0.55}
-
-\AtBeginEnvironment{figure}{\setcounter{subfigure}{0}}
-
-\captionsetup[subfloat]{labelformat=empty}
+\usepackage[all]{xy} % xy package for diagrams
+\usepackage{array}
+\usepackage{multicol} % many columns in slide
+\usepackage{hyperref} % urls
+\usepackage{hhline} %tables
+\usepackage{comment} %comments
+% Your figures are here:
+\graphicspath{ {../figures/} }
 
 %----------------------------------------------------------------------------------------------------------
 
-\title[Пример слайдов по работе]{Пример слайдов по работе \\ курса}
-\author{И.\,О.\,Фамилия}
+\title[\hbox to 56mm{Дистилляция знаний в глубоких сетях с применением методов выравнивания структур моделей}]{Дистилляция знаний в глубоких сетях с применением методов выравнивания структур моделей}
+\author[М.\,С.~Олейник]{Михаил Сергеевич Олейник}
+\institute{Московский физико-технический институт}
+\date{\footnotesize
+\par\smallskip\emph{Научный руководитель:} О. Ю. Бахтеев
+\par\bigskip\small 2023}
 
-\institute[]{Московский физико-технический институт}
-\date[2022]{\small 10\;февраля\;2022\,г.}
-
-%---------------------------------------------------------------------------------------------------------
+%----------------------------------------------------------------------------------------------------------
 \begin{document}
+%----------------------------------------------------------------------------------------------------------
 
 \begin{frame}
-\titlepage
+
+    \thispagestyle{empty}
+    \maketitle
+
+\end{frame}
+
+%-----------------------------------------------------------------------------------------------------
+
+\begin{frame}{Цели исследования}
+
+    \textbf{Проблема}: сложно проводить дистилляцию, если ученик и учитель имеют сильно отличающиеся архитектуры.
+    А если не сложно, то это дистилляция по Хинтону.
+
+    \bigskip
+
+    \textbf{Цель}: предложить метод дистилляции, который будет работать для разных архитектур и с разным количеством слоёв.
+
+\end{frame}
+
+%-----------------------------------------------------------------------------------------------------
+
+\begin{frame}{Литература}
+    \begin{itemize}
+        \item Sungsoo Ahn et al. "Variational information distillation for knowledge transfer"
+        \item Nikolaos Passalis, Maria Tzelepi, and Anastasios Tefas. "Heterogeneous knowledge distillation using
+              information flow modeling"
+        \item M Gorpinich, O Yu Bakhteev, and VV Strijov. "Gradient methods for optimizing metaparameters in the
+              knowledge distillation problem"
+    \end{itemize}
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
-\section{Слайд об исследованиях}
-\begin{frame}{Слайд об исследованиях}
-\bigskip
-Исследуется проблема \ldots.
-\begin{block}{Цель исследования~---}
-предложить метод \ldots.
-\end{block}
-\begin{block}{Требуется предложить}
-\justifying
-\begin{enumerate}[1)]
-\item метод \ldots,
-\item метод \ldots,
-\item метод \ldots.
-\end{enumerate}
-\end{block}
-\begin{block}{Решение}
-Для \ldots.
-\end{block}
+
+\begin{frame}{Постановка задачи}
+    Дана выборка для задачи классификации на $K$ классов:
+
+    $$\mathfrak{D}  = \{(\bold{x}_i, y_i)\}_{i=1}^{m},\; \bold{x}_i \in \mathbb{R}^n,\; y_i \in \mathbb{Y}  = \{1, \dots, K\},$$
+
+    $$\mathfrak{D} = \mathfrak{D}_\text{train} \bigsqcup \mathfrak{D}_\text{test}.$$
+
+    Обозначим:
+    \begin{itemize}
+        \item $\bold{f}$ --- модель учителя, обученная на $\mathfrak{D}_\text{train}$
+        \item $\bold{g}$ --- модель ученика, которую предстоит обучить
+        \item $T$ --- количество слоев в учителе
+        \item $S$ --- количество слоев в ученике
+        \item $t_i$ --- активации в $i$-м слое учителя
+        \item $s_i$ --- активации в $i$-м слое ученика
+    \end{itemize}
 \end{frame}
 
-%---------------------------------------------------------------------------------------------------------
-\section{Постановка задачи \ldots}
-\begin{frame}{Постановка задачи \ldots}
-Заданы
-\begin{enumerate}[1)]
-    \item признаки \ldots,
-    \item целевая переменная \ldots,
-    \item \ldots.
-\end{enumerate}
 
-\ldots
+%----------------------------------------------------------------------------------------------------------
 
-\bigskip
-
-Требуется выбрать модель \ldots из множества
-\[
-	\mathfrak{G} = \left\{\mathbf{g}| \mathbf{g}:\mathbb{R}^{n} \to \mathbb{Y}^\prime\right\}.
-\]
-Оптимизационная задача \ldots:
-\[
-	\mathbf{g} = \arg\min_{\mathbf{g} \in \mathfrak{G}} \mathcal{L}\bigr(\ldots\bigr),
-\]
-где $\mathcal{L}$~--- функция ошибки.
-
-\bigskip
-\footnotetext[1]{\textit{Lopez-Paz D., Bottou L., Scholkopf B., Vapnik V.} Unifying distillation and privileged information // ICLR, 2016.}
-\footnotetext[2]{\textit{Hinton G., Vinyals O., Dean J.} Distilling the knowledge in a neural network // NIPS, 2015.}
+\begin{frame}{Постановка задачи}
+    Функцию потерь ученика представим как:
+    $$
+        \mathcal{L} = \beta \mathcal{L}_\text{task} - (1 - \beta){\sum_{i, j=1}^{T, S}\lambda_{i, j}I(t_{i}, s_{j})},
+    $$
+    Где:
+    \begin{itemize}
+        \item $\mathcal{L}_\text{task}$ --- функция потерь для решения задачи классификации (кросс-энтропия),
+        \item $I(t_{i}, s_{j})$ --- взаимная информация,
+        \item $\beta$ и $\lambda_{i, j}$ --- гиперпараметры.
+    \end{itemize}
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
-\section{Предложенный метод \ldots}
-\begin{frame}{Предложенный метод \ldots}
-~\\[-1mm]
-Заданы
-\begin{enumerate}[1)]
-	\item \ldots,
-	\item \ldots.
-\end{enumerate}
 
-\medskip
-Параметрические семейства:
-\[
-\setlength\abovedisplayskip{0pt}
-\mathfrak{F} = \left\{\mathbf{f}| \mathbf{f} = \text{softmax}\bigr(\mathbf{v}\bigr(\mathbf{x}\bigr)/T\bigr), \quad \mathbf{v}: \mathbb{R}^{n} \to \mathbb{R}^K \right\},
-\]
-\[
-\mathfrak{G} = \left\{\mathbf{g}| \mathbf{g} = \text{softmax}\bigr(\mathbf{z}\bigr(\mathbf{x}\bigr)/T\bigr), \quad \mathbf{z}: \mathbb{R}^n \to \mathbb{R}^K \right\},
-\]
-где~\ldots.
-
-\medskip
-Функция ошибки
-\[
-\setlength\abovedisplayskip{0pt}
-\begin{aligned}
-   \mathcal{L}\bigr(\mathbf{g}\bigr) = &-\sum_{i=1}^{m}\underbrace{{\sum_{k=1}^{K}y^k_i\log\mathbf{g}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=1}}}_{\text{исходная функция потерь}}- \sum_{i=1}^{m}\underbrace{{\sum_{k=1}^{K}\mathbf{f}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=T_0}\log\mathbf{g}\bigr(\mathbf{x}_i\bigr)\bigr|_{T=T_0}}}_{\text{слагаемое дистилляции}},
-\end{aligned}
-\setlength\belowdisplayskip{0pt}
-\]
-где~\ldots.
-
-Оптимальная модель выбирается из класса,
-$\hat{\mathbf{g}} = \arg\min\limits_{\mathbf{g} \in \mathfrak{G}_{\text{cl}}} \mathcal{L}\bigr(\mathbf{g}\bigr).$
+\begin{frame}{Взаимная информация}
+    Метод вариации нижней границы:
+    \begin{equation}
+        I(t, s) = H(t) - H(t|s) \geq  H(t) + E_{t,s}[\log{q(t|s)}].
+    \end{equation}
+    Вариационное распределение:
+    \begin{multline}
+        -\log{q(t|s)} = -\sum_{c=1}^{C}  \sum_{h=1}^{H} \sum_{w=1}^{W} \log{q(t_{c,h,w}|s)} = \\
+        = \sum_{c=1}^{C}  \sum_{h=1}^{H} \sum_{w=1}^{W} \log{\sigma_c} + \frac{(t_{c,h,w} - \mu_{c,h,w}(s))^2}{2\sigma_c^2} + constant.
+    \end{multline}
+    Обучаемые параметры:
+    $$\sigma^2_c = \log{(1 + e^{\alpha_c})} + \epsilon$$
+    $$\mu_{c,h,w}(s) = \mu(s)_{c,h,w}$$
 \end{frame}
 
-%----------------------------------------------------------------------------------------------------------
-\section{Анализ предложенного метода \ldots}
-\begin{frame}{Анализ предложенного метода \ldots}
-\justifying
+%-----------------------------------------------------------------------------------------------------
 
-На графике показана зависимость значения параметров$w_i$ в зависимости от параметра~$l_1$-регуляризации~$C$.
-\begin{figure}[h!]
-\includegraphics[width=0.45\textwidth]{../figures/log_reg_cs_exp.eps}
-\includegraphics[width=0.45\textwidth]{../figures/log_reg_cs_exp.eps}
-\end{figure}
+\begin{frame}{Схема метода}
 
-С увеличением параметра регуляризации~$C$ число ненулевых параметров~$w_i$ уменьшается.
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{ahn_diagram.pdf}
+            \caption{Базовый метод \footnote{Sungsoo Ahn et al. "Variational information distillation for knowledge transfer"}}
+        \end{figure}
+
+        \column{0.4\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{our_diagram.pdf}
+            \caption{Предлагаемый метод}
+        \end{figure}
+    \end{columns}
+
+    \begin{equation}
+        \mathcal{L} = \beta \mathcal{L}_\text{CE} - (1 - \beta){\sum_{i, j=1}^{T, S}\lambda_{i, j}I(t_{i}, s_{j})}
+    \end{equation}
+
 
 \end{frame}
 
+
 %----------------------------------------------------------------------------------------------------------
-\section{Выводы}
-\begin{frame}{Выводы}
-\justifying
-	\begin{enumerate}
-	\justifying
-	    \item Предложен \ldots.
-        \item Доказаны теоремы \ldots, 
+
+\begin{frame}{Вычислительный эксперимент}
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+        Датасеты:
         \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
+            \item CIFAR10
         \end{itemize}
-        \item Предложен метод \ldots
+        Модели:
         \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
+            \item ConvVeryTiny
+            \item ConvTiny
+            \item ResNet10
+            \item ResNet18
         \end{itemize}
-        \item Предложены методы \ldots
+        Метрики:
         \begin{itemize}
-            \item[---] \ldots,
-            \item[---] \ldots.
+            \item accuracy
         \end{itemize}
-        \item Предложена вероятностная интерпретации \ldots.
-	\end{enumerate}
+        \column{0.45\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{conv_scheme.png}
+            \caption{Схема моделей ConvVeryTiny и ConvTiny}
+        \end{figure}
+    \end{columns}
 \end{frame}
+
 %----------------------------------------------------------------------------------------------------------
 
-\end{document} 
+\begin{frame}{Эксперимент 1}
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+        \textbf{Учитель}: ConvTiny.
+
+        \textbf{Ученик}: ConvVeryTiny.
+
+
+        \column{0.55\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{distill_epoch_accuracy.png}
+            \caption{Точность от эпохи при дистилляции каждый с каждым}
+        \end{figure}
+    \end{columns}
+
+    \begin{table}[]
+        \begin{tabular}{|l|l|l|l|l|}
+            \hline
+            Дистилляция & ---  & Хинтона & попарная  & каждый с каждым \\ \hline
+            Учитель     & 0.58 & ---     & ---       & ---             \\ \hline
+            Ученик      & 0.54 & 0.56    & 0.58-0.59 & 0.58-0.59       \\ \hline
+        \end{tabular}
+        \caption{Сравнение качества моделей на тестовой выборке}
+    \end{table}
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Эксперимент 1}
+    \begin{figure}[H]
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{connections_1}} a) \\
+        \end{minipage}
+        \hfill
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{connections_2}} b) \\
+        \end{minipage}
+        \vfill
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{connections_3}} c) \\
+        \end{minipage}
+        \hfill
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{connections_4}} d) \\
+        \end{minipage}
+        \caption{Иллюстрация коэффициентов у четырех лучших моделей по качеству. Зелёные точки --- слои ученика, красные --- слои учителя. Чем толще линия, тем больше коэффициент у соответствующей связи.}
+    \end{figure}
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Эксперимент 2}
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+        \textbf{Учитель}: ResNet10.
+
+        \textbf{Ученик}: ConvTiny.
+
+        \column{0.55\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{resnet10_tiny.png}
+            \caption{Точность от эпохи при дистилляции каждый с каждым}
+        \end{figure}
+    \end{columns}
+
+    \begin{table}[h!]
+        \centering
+        \begin{tabular}{|l|l|l|l|}
+            \hline
+            Дистилляция & ---  & Хинтона & каждый с каждым \\ \hline
+            Учитель     & 0.68 & ---     & ---             \\ \hline
+            Ученик      & 0.58 & 0.60    & 0.63            \\ \hline
+        \end{tabular}
+        \caption{Качество моделей при дистилляции на тестовой выборке}
+    \end{table}
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Эксперимент 2}
+    \begin{figure}[H]
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{r10_conn_1}} a) \\
+        \end{minipage}
+        \hfill
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{r10_conn_2}} b) \\
+        \end{minipage}
+        \vfill
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{r10_conn_3}} c) \\
+        \end{minipage}
+        \hfill
+        \begin{minipage}[h]{0.35\linewidth}
+            \center{\includegraphics[width=1\linewidth]{r10_conn_4}} d) \\
+        \end{minipage}
+        \caption{Иллюстрация коэффициентов у четырех лучших моделей по качеству. Зелёные точки --- слои ученика, красные --- слои учителя. Чем толще линия, тем больше коэффициент у соответствующей связи.}
+    \end{figure}
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Заключение}
+    Был предложен метод дистилляции знаний, который можно применить к моделям с разным количеством слоев и/или разными архитектурами,
+    который выдает большее качество, чем дистилляция Хинтона. Однако, к недостаткам данного подхода можно отнести большие требования по памяти и времени,
+    если модель учителя и/или ученика имеет большое количество слоёв. В дальнейших планах стоит более тщательное изучение влияния связей между слоями на итоговый результат,
+    что потенциально и может свести недостатки подхода к минимуму.
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+\end{document}

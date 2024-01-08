@@ -120,3 +120,13 @@ logs/
 */mnist
 *.csv
 !.dvc
+
+# LaTeX 
+*.aux
+*.bbl
+*.blg
+*.out
+*.gz
+
+# Data
+data/*
