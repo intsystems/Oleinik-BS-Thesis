@@ -15,16 +15,23 @@
 
 .. class:: center
 
-    :Название исследуемой задачи: Мое название работы
-    :Тип научной работы: M1P/НИР/CoIS
-    :Автор: Имя Отчество Фамилия
-    :Научный руководитель: степень, Фамилия Имя Отчество
-    :Научный консультант(при наличии): степень, Фамилия Имя Отчество
+    :Название исследуемой задачи: Дистилляция знаний в глубоких сетях с применением методов выравнивания структур моделей
+    :Тип научной работы: НИР
+    :Автор: Михаил Сергеевич Олейник
+    :Научный руководитель: кандидат физико-математических наук, Бахтеев Олег Юрьевич
 
 Abstract
 ========
+Дистилляция знаний позволяет повысить качество модели, называемой учеником, не увеличивая её число параметров,
+  а используя модель большего размера, называемой учителем.
+  Однако, в случае разных архитектур и несовпадения количества слоев у учителя и ученика, распространённые методы не применимы.
+  Одним из подходов, который позволяет решать задачу для разных архитектур, является максимизация взаимной информации.
+  Мы предлагаем улучшение этого подхода, которое позволит проводить дистилляцию и для моделей с разным количеством слоёв.
 
-Purus sit amet luctus venenatis lectus magna fringilla. Condimentum id venenatis a condimentum vitae sapien. Auctor neque vitae tempus quam pellentesque nec nam aliquam. Eget egestas purus viverra accumsan in. Nam aliquam sem et tortor. Donec et odio pellentesque diam volutpat commodo. Odio pellentesque diam volutpat commodo sed egestas. Sit amet dictum sit amet justo. Pellentesque sit amet porttitor eget. Imperdiet sed euismod nisi porta lorem mollis aliquam ut. Quis varius quam quisque id diam vel quam elementum. Ornare lectus sit amet est placerat in. Vulputate dignissim suspendisse in est ante. Elit sed vulputate mi sit amet mauris. Egestas sed tempus urna et pharetra pharetra. Viverra tellus in hac habitasse platea dictumst vestibulum rhoncus.
+
+Code link
+===============================
+1. https://github.com/intsystems/Oleinik-BS-Thesis/blob/master/code/basic_experiment.ipynb
 
 Research publications
 ===============================
