@@ -29,13 +29,7 @@ Abstract
 Одним из подходов, который позволяет решать задачу для разных архитектур, является максимизация взаимной информации.
 Мы предлагаем улучшение этого подхода, которое позволит проводить дистилляцию и для моделей с разным количеством слоёв.
 
-
-Code link
-===============================
-1. https://github.com/intsystems/Oleinik-BS-Thesis/blob/master/code/basic_experiment.ipynb
-
-
 Software modules developed as part of the study
 ======================================================
-1. A python code with all implementation`here <https://github.com/intsystems/Oleinik-BS-Thesis/blob/master/code>`_.
+1. A python code with all implementation `here <https://github.com/intsystems/Oleinik-BS-Thesis/blob/master/code>`_.
 2. A code with base experiment `here <https://github.com/intsystems/Oleinik-BS-Thesis/blob/master/code/basic_experiment.ipynb>`_. Can use `colab <http://colab.research.google.com/github/intsystems/Oleinik-BS-Thesis/blob/master/code/basic_experiment.ipynb>`_.
