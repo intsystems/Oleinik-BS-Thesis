@@ -130,3 +130,8 @@ logs/
 
 # Data
 data/*
+
+# Notes
+notes
+code/lightning_logs
+code/wandb

@@ -14,7 +14,10 @@ def cifar10_loader(
     std = [x / 255 for x in [63.0, 62.1, 66.7]]
 
     transform = transforms.Compose(
-        [transforms.ToTensor(), transforms.Normalize(mean, std)]
+        [
+            transforms.ToTensor(),
+            # transforms.Normalize(mean, std),
+        ]
     )
 
     train_data = dset.CIFAR10(data_path, train=True, transform=transform, download=True)
@@ -27,12 +30,12 @@ def cifar10_loader(
         train_data,
         batch_size=batch_size,
         shuffle=False,
-        num_workers=0,
+        num_workers=11,
         pin_memory=True,
     )
 
     test_loader = torch.utils.data.DataLoader(
-        test_data, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True
+        test_data, batch_size=batch_size, shuffle=False, num_workers=11, pin_memory=True
     )
 
     return train_loader, test_loader
