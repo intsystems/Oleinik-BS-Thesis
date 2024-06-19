@@ -79,5 +79,7 @@ class Base_Model(L.LightningModule):
         self.test_step_outputs.clear()
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.parameters())
+        lr = 0.1
+        optimizer = torch.optim.SGD(self.parameters(), lr=lr)
+        wandb.log({"optimizer": "SGD", "lr": lr})
         return optimizer

@@ -184,6 +184,7 @@ class All_Connections_Distillation(L.LightningModule):
 
     def log_accuracy(self, batches):
         test_acc = accuracy(self.student, batches)
+        self.test_acc = test_acc
         self.log("test_acc", test_acc)
 
     def log_fgsm_accuracy(self, batches):
@@ -258,5 +259,8 @@ class All_Connections_Distillation(L.LightningModule):
         for _, _, _, model, sigma in self.connections:
             learnable_params += list(model.parameters())
             learnable_params += [sigma]
-        optimizer = torch.optim.Adam(learnable_params)
+
+        lr = 0.1
+        optimizer = torch.optim.SGD(learnable_params, lr=lr)
+        wandb.log({"optimizer": "SGD", "lr": lr})
         return optimizer

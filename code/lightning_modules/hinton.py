@@ -93,5 +93,6 @@ class Hinton_Distillation(L.LightningModule):
         self.test_step_outputs.clear()
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.student.parameters())
+        optimizer = torch.optim.SGD(self.student.parameters())
+        wandb.log({"optimizer": "SGD"})
         return optimizer
