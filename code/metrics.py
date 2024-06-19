@@ -41,7 +41,7 @@ def FGSM_accuracy_curve(model: nn.Module, batches, max_delta=0.015, steps=20):
     return delta_arr, fgsm_accuracy_arr, auc_fgsm
 
 
-def Noise_accuracy_curve(model: nn.Module, batches, max_delta=0.15, steps=20):
+def Noise_accuracy_curve(model: nn.Module, batches, max_delta=0.08, steps=40):
     delta_arr = np.linspace(0, max_delta, steps)
     noise_accuracy_arr = []
     param_vector = parameters_to_vector(model.parameters())
