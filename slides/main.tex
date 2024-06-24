@@ -14,6 +14,11 @@
 \usepackage{hyperref} % urls
 \usepackage{hhline} %tables
 \usepackage{comment} %comments
+\newcommand{\blambda}{\boldsymbol{\lambda}}
+
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
 % Your figures are here:
 \graphicspath{ {../figures/} }
 
@@ -23,7 +28,7 @@
 \subtitle{\textcolor{black}{Выпускная квалификационная работа бакалавра}}
 \author[М.\,С.~Олейник]{
     Михаил Сергеевич Олейник\\
-    Научный руководитель: к.ф.-м.н. О.\,,Ю.~Бахтеев
+    Научный руководитель: к.ф.-м.н. О.\,Ю.~Бахтеев
 }
 \institute[МФТИ (НИУ)]{
 \small{
@@ -49,25 +54,14 @@
 
 \begin{frame}{Цели исследования}
 
-    \textbf{Проблема}: сложно проводить дистилляцию, если ученик и учитель имеют сильно отличающиеся архитектуры.
-    А если не сложно, то это дистилляция по Хинтону.
+    \textbf{Проблема}: если модели ученика и учителя имеют сильно отличающиеся архитектуры, то сложно провести дистилляцию знаний.
+    Есть методы, с помощью которых это возможно сделать, но они дают малый прирост качества.
 
     \bigskip
 
-    \textbf{Цель}: предложить метод дистилляции, который будет работать для разных архитектур и с разным количеством слоёв.
+    \textbf{Цель}: предложить метод дистилляции, который будет работать для разных архитектур и с разным количеством слоёв,
+    предложить для него алгоритм подбора гиперпараметров.
 
-\end{frame}
-
-%-----------------------------------------------------------------------------------------------------
-
-\begin{frame}{Литература}
-    \begin{itemize}
-        \item Sungsoo Ahn et al. "Variational information distillation for knowledge transfer"
-        \item Nikolaos Passalis, Maria Tzelepi, and Anastasios Tefas. "Heterogeneous knowledge distillation using
-              information flow modeling"
-        \item M Gorpinich, O Yu Bakhteev, and VV Strijov. "Gradient methods for optimizing metaparameters in the
-              knowledge distillation problem"
-    \end{itemize}
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
@@ -77,16 +71,13 @@
 
     $$\mathfrak{D}  = \{(\bold{x}_i, y_i)\}_{i=1}^{m},\; \bold{x}_i \in \mathbb{R}^n,\; y_i \in \mathbb{Y}  = \{1, \dots, K\},$$
 
-    $$\mathfrak{D} = \mathfrak{D}_\text{train} \bigsqcup \mathfrak{D}_\text{test}.$$
 
     Обозначим:
     \begin{itemize}
-        \item $\bold{f}$ --- модель учителя, обученная на $\mathfrak{D}_\text{train}$
-        \item $\bold{g}$ --- модель ученика, которую предстоит обучить
-        \item $T$ --- количество слоев в учителе
-        \item $S$ --- количество слоев в ученике
-        \item $t_i$ --- активации в $i$-м слое учителя
-        \item $s_i$ --- активации в $i$-м слое ученика
+        \item $T$ --- количество слоев в модели учителе
+        \item $S$ --- количество слоев в модели ученике
+        \item $\bold{t}_{i}$ --- активации в $i$-м слое учителя
+        \item $\bold{s}_{i}$ --- активации в $i$-м слое ученика
     \end{itemize}
 \end{frame}
 
@@ -96,14 +87,39 @@
 \begin{frame}{Постановка задачи}
     Функцию потерь ученика представим как:
     $$
-        \mathcal{L} = \beta \mathcal{L}_\text{task} - (1 - \beta){\sum_{i, j=1}^{T, S}\lambda_{i, j}I(t_{i}, s_{j})},
+        \mathcal{L} = \beta \mathcal{L}_\text{CE} - (1 - \beta){\sum_{i=1}^T \sum_{j=1}^S \lambda_{i, j}I(\bold{t}_{i}, \bold{s}_{j})}
     $$
     Где:
     \begin{itemize}
-        \item $\mathcal{L}_\text{task}$ --- функция потерь для решения задачи классификации (кросс-энтропия),
-        \item $I(t_{i}, s_{j})$ --- взаимная информация,
+        \item $\mathcal{L}_\text{CE}$ --- функция потерь для решения задачи классификации (кросс-энтропия),
+        \item $I(\bold{t}_{i}, \bold{s}_{j})$ --- взаимная информация,
         \item $\beta$ и $\lambda_{i, j}$ --- гиперпараметры.
     \end{itemize}
+\end{frame}
+
+%----------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Схема метода}
+
+    \begin{columns}[c]
+        \column{0.4\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{ahn_diagram.pdf}
+            \caption{Базовый метод \footnote{Sungsoo Ahn et al. "Variational information distillation for knowledge transfer"}}
+        \end{figure}
+
+        \column{0.4\textwidth}
+        \begin{figure}
+            \includegraphics[width=1.0\textwidth]{our_diagram.pdf}
+            \caption{Предлагаемый метод}
+        \end{figure}
+    \end{columns}
+
+    \begin{equation}
+        \mathcal{L} = \beta \mathcal{L}_\text{CE} - (1 - \beta){\sum_{i=1}^T \sum_{j=1}^S \lambda_{i, j}I(\bold{t}_{i}, \bold{s}_{j})}
+    \end{equation}
+
+
 \end{frame}
 
 %----------------------------------------------------------------------------------------------------------
@@ -125,31 +141,20 @@
 
 %-----------------------------------------------------------------------------------------------------
 
-\begin{frame}{Схема метода}
+\begin{frame}{Двухуровневая оптимизация}
+    $$\mathfrak{D} = \mathfrak{D}_\text{train} \bigsqcup \mathfrak{D}_\text{val}.$$
+    Определим вектор $\blambda$ из всех гиперпараметров задачи:
+    $$\blambda = [\lambda_{0, 0}, \ldots, \lambda_{i, j}, \ldots, \beta].$$
 
-    \begin{columns}[c]
-        \column{0.4\textwidth}
-        \begin{figure}
-            \includegraphics[width=1.0\textwidth]{ahn_diagram.pdf}
-            \caption{Базовый метод \footnote{Sungsoo Ahn et al. "Variational information distillation for knowledge transfer"}}
-        \end{figure}
+    Все обучаемые параметры --- $\bold{w}$.
 
-        \column{0.4\textwidth}
-        \begin{figure}
-            \includegraphics[width=1.0\textwidth]{our_diagram.pdf}
-            \caption{Предлагаемый метод}
-        \end{figure}
-    \end{columns}
-
-    \begin{equation}
-        \mathcal{L} = \beta \mathcal{L}_\text{CE} - (1 - \beta){\sum_{i, j=1}^{T, S}\lambda_{i, j}I(t_{i}, s_{j})}
-    \end{equation}
-
+    И это определяет задачу двухуровневой оптимизации:
+    $$\min_{\blambda} \quad \mathcal{L}_\text{val}(\bold{\hat{w}}(\blambda), \blambda),$$
+    $$\text{s.t.} \quad  \bold{\hat{w}}(\blambda) = \argmin_{\bold{w}}{\mathcal{L}_\text{train}(\bold{w}, \blambda)}. $$
 
 \end{frame}
 
-
-%----------------------------------------------------------------------------------------------------------
+%-----------------------------------------------------------------------------------------------------
 
 \begin{frame}{Вычислительный эксперимент}
     \begin{columns}[c]
@@ -157,13 +162,12 @@
         Датасеты:
         \begin{itemize}
             \item CIFAR10
+            \item FashionMNIST
         \end{itemize}
         Модели:
         \begin{itemize}
             \item ConvVeryTiny
             \item ConvTiny
-            \item ResNet10
-            \item ResNet18
         \end{itemize}
         Метрики:
         \begin{itemize}
@@ -230,57 +234,6 @@
 
 %----------------------------------------------------------------------------------------------------------
 
-\begin{frame}{Эксперимент 2}
-    \begin{columns}[c]
-        \column{0.4\textwidth}
-        \textbf{Учитель}: ResNet10.
-
-        \textbf{Ученик}: ConvTiny.
-
-        \column{0.55\textwidth}
-        \begin{figure}
-            \includegraphics[width=1.0\textwidth]{resnet10_tiny.png}
-            \caption{Точность от эпохи при дистилляции каждый с каждым}
-        \end{figure}
-    \end{columns}
-
-    \begin{table}[h!]
-        \centering
-        \begin{tabular}{|l|l|l|l|}
-            \hline
-            Дистилляция & ---  & Хинтона & каждый с каждым \\ \hline
-            Учитель     & 0.68 & ---     & ---             \\ \hline
-            Ученик      & 0.58 & 0.60    & 0.63            \\ \hline
-        \end{tabular}
-        \caption{Качество моделей при дистилляции на тестовой выборке}
-    \end{table}
-\end{frame}
-
-%----------------------------------------------------------------------------------------------------------
-
-\begin{frame}{Эксперимент 2}
-    \begin{figure}[H]
-        \begin{minipage}[h]{0.35\linewidth}
-            \center{\includegraphics[width=1\linewidth]{r10_conn_1}} a) \\
-        \end{minipage}
-        \hfill
-        \begin{minipage}[h]{0.35\linewidth}
-            \center{\includegraphics[width=1\linewidth]{r10_conn_2}} b) \\
-        \end{minipage}
-        \vfill
-        \begin{minipage}[h]{0.35\linewidth}
-            \center{\includegraphics[width=1\linewidth]{r10_conn_3}} c) \\
-        \end{minipage}
-        \hfill
-        \begin{minipage}[h]{0.35\linewidth}
-            \center{\includegraphics[width=1\linewidth]{r10_conn_4}} d) \\
-        \end{minipage}
-        \caption{Иллюстрация коэффициентов у четырех лучших моделей по качеству. Зелёные точки --- слои ученика, красные --- слои учителя. Чем толще линия, тем больше коэффициент у соответствующей связи.}
-    \end{figure}
-\end{frame}
-
-%----------------------------------------------------------------------------------------------------------
-
 \begin{frame}{Заключение}
     Был предложен метод дистилляции знаний, который можно применить к моделям с разным количеством слоев и/или разными архитектурами,
     который выдает большее качество, чем дистилляция Хинтона. Однако, к недостаткам данного подхода можно отнести большие требования по памяти и времени,
@@ -288,5 +241,17 @@
     что потенциально и может свести недостатки подхода к минимуму.
 \end{frame}
 
+%-----------------------------------------------------------------------------------------------------
+
+\begin{frame}{Литература}
+    \begin{itemize}
+        \item Sungsoo Ahn et al. "Variational information distillation for knowledge transfer"
+        \item Nikolaos Passalis, Maria Tzelepi, and Anastasios Tefas. "Heterogeneous knowledge distillation using
+              information flow modeling"
+        \item M Gorpinich, O Yu Bakhteev, and VV Strijov. "Gradient methods for optimizing metaparameters in the
+              knowledge distillation problem"
+        \item Liu Hanxiao et al. "DARTS: Differentiable Architecture Search"
+    \end{itemize}
+\end{frame}
 %----------------------------------------------------------------------------------------------------------
 \end{document}
